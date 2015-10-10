@@ -1,0 +1,75 @@
+{
+  "name": "react-video",
+  "version": "1.5.3",
+  "description": "React component to load video from Vimeo or Youtube across any device",
+  "author": {
+    "name": "Pedro Nauck",
+    "email": "pedronauck@gmail.com",
+    "url": "https://github.com/pedronauck"
+  },
+  "bugs": {
+    "url": "https://github.com/pedronauck/react-video/issues"
+  },
+  "homepage": "https://github.com/pedronauck/react-video",
+  "license": "MIT",
+  "main": "dist/react-video.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pedronauck/react-video.git"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "react-video",
+    "video",
+    "youtube",
+    "video",
+    "player"
+  ],
+  "scripts": {
+    "bundle": "gulp bundle",
+    "start": "gulp",
+    "test": "jest"
+  },
+  "jest": {
+    "scriptPreprocessor": "./utils/jsx-preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "./node_modules/react"
+    ],
+    "testFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json"
+    ]
+  },
+  "devDependencies": {
+    "babel-core": "^5.6.15",
+    "babel-loader": "^5.3.1",
+    "browser-sync": "^1.5.2",
+    "gulp": "^3.8.6",
+    "gulp-gh-pages": "^0.4.0",
+    "gulp-header": "^1.2.1",
+    "gulp-minify-css": "^0.3.11",
+    "gulp-rename": "^1.2.0",
+    "gulp-shell": "^0.2.10",
+    "gulp-stylus": "^1.3.3",
+    "gulp-util": "^3.0.1",
+    "jest-cli": "^0.1.18",
+    "lodash": "^2.4.1",
+    "nib": "^1.0.4",
+    "node-libs-browser": "^0.5.2",
+    "webpack": "^1.10.1",
+    "yargs": "^1.3.2"
+  },
+  "gitHead": "ddc12d59cc71582af1b7d7f45fa21c784cd8eeb4",
+  "readme": "# React Video\n\n![Git release](http://img.shields.io/github/release/pedronauck/react-video.svg?style=flat) ![Travis](http://img.shields.io/travis/pedronauck/react-video.svg?style=flat) ![license](http://img.shields.io/npm/l/react-video.svg?style=flat)\n\n![](http://f.cl.ly/items/440F3Y0w1l293g3e3g3N/cover.png)\n\nA pretty good and effective way to create a video placeholder from Youtube or Vimeo using a high-res image. If you don't know, when an `<iframe>` is rendered from browser, it blocks its parse because it isn't a [non-blocking script](http://www.nczonline.net/blog/2010/08/10/what-is-a-non-blocking-script/). This isn't so good to your user, no?. With this react component, the `<iframe>` just will be loaded when the user click on play.\n\n## Install\n\nInstalling this component is very easy and it has just one dependency: [React](http://facebook.github.io/react/downloads.html). So, you have a lot of options to do that:\n\n- Using NPM *~the quickest way~*\n```bash\n  $ npm install --save react-video\n```\n\n- Using Bower\n```bash\n  $ bower install --save react-video\n```\n\n- Or if you want to [download the lastest release](https://github.com/pedronauck/react-video/archive/v1.5.3.zip) and put in your website, it will work too!\n\n**NOTICE:** You need just one thing to make the component work. Put the [base component style](./dist/react-video.css) at the `<header>` tag. If you don't wanna use the `.css` extension, you can get the `.styl` or `.scss` extension at the folder `./lib`.\n\nThen you're done! :smile_cat:\n\n## Usage\n\nUsing the component is simpler than installing. See an example with [browserify](http://truongtx.me/2014/07/18/using-reactjs-with-browserify-and-gulp/) to bundle your script:\n\n```javascript\n  var Video = require('react-video');\n\n  // Video from Youtube\n  React.render(\n    <Video from='youtube' videoId={videoId} />,\n    $mountNode\n  );\n\n  // Video from Vimeo\n  React.render(\n    <Video from='vimeo' videoId={videoId} />,\n    $mountNode\n  );\n```\n\nThe property `videoId` is optional, so you can use it or not. If you don't pass the property, the component will select your type of video based on your id.\n\n```javascript\n  React.render(\n    <Video videoId={videoId} />\n    document.querySelector('#your-div')\n  );\n```\n\nTo handle errors when something happens, like your video can't be loaded, you can pass a callback with a prop `onError` in the component:\n\n```javascript\n  var _onError = function(err) {\n    console.log(err);\n  };\n\n  React.render(\n    <Video onError={_onError} videoId={videoId} />\n    document.querySelector('#your-div')\n  );\n```\n\nIf you decide to use just Javascript without any module loader, you can get the global variable `window.ReactVideo` *(or just `ReactVideo`)*:\n\n```javascript\n  /** @jsx React.DOM */\n\n  var Video = ReactVideo;\n```\n\n## Behind the Scene\n\nThere are some things that you should know about the component. The first one is the structure created inside by the component if you wish to stylize it.\n\nSo, the semantic HTML structure will be something like this:\n\n```html\n  <div class='video'>\n    <div class='video-loading'>\n      <svg>...</svg>\n    </div>\n    <div class='video-image'>\n      <button type='button' class='video-play-button'>\n        <svg>...</svg>\n      </button>\n    </div>\n    <div class='video-embed'>\n      <iframe>...</iframe>\n    </div>\n  </div>\n```\n\nThis is a very simple structure to stylize however you want. So, if you are lost, don't panic, there is a [real functional example](/example) that you can follow.\n\nFor more details, check out the API below.\n\n## Component API\n\n`<Video>` component:\n\nProperty | Type | Default | Required | Description\n-------- | ---- | ------- | -------- |-----------\nfrom | `String` | none | no | Video source: `youtube` or `vimeo`. Leave empty and the service will be detected for you by looking a the id.\nvideoId | `String` | none | no | The video ID\nonError | `Function` | yes | no | Callback function if the video can't be loaded\n\n## Contributing\n\nAnyone can help make this project better - check out the [Contributing guide](CONTRIBUTING.md)!\n\n## License\n\nSee the [License](LICENSE) file.\n",
+  "readmeFilename": "README.md",
+  "_id": "react-video@1.5.3",
+  "_shasum": "4f595b78db328137055378d888f7f0a4410f2511",
+  "_from": "vixns/react-video#ddc12d59cc71582af1b7d7f45fa21c784cd8eeb4",
+  "_resolved": "git://github.com/vixns/react-video.git#ddc12d59cc71582af1b7d7f45fa21c784cd8eeb4"
+}
